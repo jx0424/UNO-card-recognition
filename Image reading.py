@@ -3,20 +3,25 @@ import numpy as np
 
 #Load in image from folder 
 image = cv2.imread(r'C:\Users\brend\OneDrive - Middlesex University\Documents\GitHub\UNO-card-recognition\images\b0.jpg')
-bilateral_image = cv2.bilateralFilter(image, 9 , 50, 50)
+bilateral_image = cv2.bilateralFilter(image, 9 , 100, 100)
 cv2.imshow('Bilateral image', bilateral_image)
-blur_image = cv2.GaussianBlur(bilateral_image, (9,9), cv2.BORDER_CONSTANT)
+blur_image = cv2.GaussianBlur(bilateral_image, (3,3), cv2.BORDER_CONSTANT)
 cv2.imshow('blur',blur_image)
 BW_image = cv2.cvtColor(blur_image, cv2.COLOR_BGR2GRAY)
 cv2.imshow('Black and White', BW_image)
-threshed_image = cv2.adaptiveThreshold(BW_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 9 ,7)
+thr_value, threshed_image = cv2.threshold(BW_image, 180, 255, cv2.THRESH_BINARY)
 cv2.imshow('threshed image' ,threshed_image)
+
+kernel = np.ones((9,9), np.uint8)
+image_close = cv2.morphologyEx(threshed_image, cv2.MORPH_OPEN, kernel)      # morphology correction
+img_canny = cv2.Canny(image_close, 50, 100) 
+
 # canny_image = cv2.Canny (threshed_image, 100, 100)
 # cv2.imshow('canny', canny_image)
-contours, hierarchy = cv2.findContours(threshed_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+contours, hierarchy = cv2.findContours(image_close, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 print(len(contours))
 
-cv2.drawContours(image, contours, -1 , (0,255,0), 1)
+cv2.drawContours(image, contours, -1 , (0,255,0), 2)
 cv2.imshow('contour image', image)
 
 
