@@ -3,6 +3,7 @@ import numpy as np
 import os
 from os import listdir
 
+##Contour for each colour
 folder_dir = r'C:\Users\brend\OneDrive - Middlesex University\Documents\GitHub\UNO-card-recognition\images'
 for images in os.listdr(folder_dir):
     if images.
@@ -14,6 +15,7 @@ img_sm = cv2.blur(img, (9,9))         # smoothing
 thr_value, img_th = cv2.threshold(img_sm, 160, 255, cv2.THRESH_BINARY)   # binarisation
 kernel = np.ones((3,3), np.uint8)
 img_close = cv2.morphologyEx(img_th, cv2.MORPH_OPEN, kernel)      # morphology correction
+cropped = img_close[260:400,260:395]
 img_canny = cv2.Canny(img_close, 100, 200)  
 cv2.imshow('canny', img_canny)
 cv2.imshow('sm', img_sm)
